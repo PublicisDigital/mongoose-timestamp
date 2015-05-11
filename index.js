@@ -78,4 +78,4 @@ function historyPlugin(schema) {
 
 }
 
-module.exports = timestampsPlugin;
+module.exports = historyPlugin;
