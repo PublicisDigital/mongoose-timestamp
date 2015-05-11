@@ -1,25 +1,24 @@
-Mongoose Timestamps Plugin [![Build Status](https://secure.travis-ci.org/drudge/mongoose-timestamp.png?branch=master)](https://travis-ci.org/drudge/mongoose-timestamp)
+Mongoose History Plugin
 ==========================
 
-Simple plugin for [Mongoose](https://github.com/LearnBoost/mongoose) which adds `createdAt` and `updatedAt` date attributes 
-that get auto-assigned to the most recent create/update timestamp.
+Mongoose plugin that adds createdAt and updatedAt auto-assigned date properties. Then it creates a history object which holds a copy of the current state.
 
 ## Installation
 
-`npm install mongoose-timestamp`
+`npm install mongoose-mongoose`
 
 ## Usage
 
 ```javascript
-var timestamps = require('mongoose-timestamp');
+var history = require('mongoose-mongoose');
 var UserSchema = new Schema({
     username: String
 });
-UserSchema.plugin(timestamps);
+UserSchema.plugin(history);
 mongoose.model('User', UserSchema);
 var User = mongoose.model('User', UserSchema)
 ```
-The User model will now have `createdAt` and `updatedAt` properties, which get 
+The User model will now have `createdAt`, `updatedAt`, and `deleted` properties, which get 
 automatically generated and updated when you save your document.
 
 ```javascript
