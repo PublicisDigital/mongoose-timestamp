@@ -64,7 +64,6 @@ function historyPlugin(schema) {
         });
       } else {
         dataObj[createdAt] = createdAtType;
-          console.log(dataObj);
         schema.add(dataObj);
         schema.pre('save', function (next) {
           if (!this[createdAt]) {
