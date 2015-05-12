@@ -15,7 +15,7 @@ var HistoryModel = function() {
         owner: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
     });
 
-    schema.plugin(history);
+    schema.plugin(history, false);
     schema.plugin(deepPopulate);
 
     schema.pre("save", function(next) {
