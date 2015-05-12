@@ -3,7 +3,7 @@
  */
 
 var mongoose = require('mongoose'),
-    history = require('./index').plugin,
+    history = require('mongoose-history').plugin,
     deepPopulate = require('mongoose-deep-populate');
 
 var HistoryModel = function() {
