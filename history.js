@@ -3,7 +3,8 @@
  */
 
 var mongoose = require('mongoose'),
-    timestamps = require('mongoose-timestamp');
+    history = require('./index').historyPlugin,
+    deepPopulate = require('mongoose-deep-populate');
 
 var HistoryModel = function() {
 
@@ -14,7 +15,8 @@ var HistoryModel = function() {
         owner: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
     });
 
-    schema.plugin(timestamps);
+    schema.plugin(history);
+    schema.plugin(deepPopulate);
 
     schema.pre("save", function(next) {
         this.objectId = this.object.id;
