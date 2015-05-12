@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 
-function historyPlugin(schema) {
+function historyPlugin(schema, addHistory) {
+    if (addHistory == undefined) {addHistory = true;}
       var updatedAt = 'updatedAt';
       var createdAt = 'createdAt';
       var deleted = 'deleted';
@@ -15,29 +16,27 @@ function historyPlugin(schema) {
       dataObj[updatedBy] = updatedByType;
       dataObj[deleted] = deletedType;
 
-      schema.post("update", function() {
+    if (addHistory) {
+        schema.post("update", function() {
             var object = this;
-            if (object.constructor.name !== "HistoryModel") {
-              var action = "update";
-              if(object.deleted) {
-                  action = "delete";
-              }
-              var history = new HistoryModel({
-                  action: action,
-                  object: object,
-                  owner: (object.owner) ? object.owner : null
-              });
-              history.save(function(err, object) {
-                  if (err) {
-                      console.log("Object Update/Remove History Save Failed:: "+err);
-                  }
-              });
+            var action = "update";
+            if(object.deleted) {
+                action = "delete";
             }
+            var history = new HistoryModel({
+                action: action,
+                object: object,
+                owner: (object.owner) ? object.owner : null
+            });
+            history.save(function(err, object) {
+                if (err) {
+                    console.log("Object Update/Remove History Save Failed:: "+err);
+                }
+            });
         });
 
         schema.post('save', function() {
-          var object = this;
-          if (object.constructor.name !== "HistoryModel") {
+            var object = this;
             var history = new HistoryModel({
                 action: "create",
                 object: object,
@@ -48,9 +47,10 @@ function historyPlugin(schema) {
                     console.log("Object Create History Save Failed:: "+err);
                 }
             });
-          }
-          
         });
+    }
+
+
 
       if (schema.path(createdAt)) {
         schema.add(dataObj);
