@@ -17,25 +17,28 @@ function historyPlugin(schema) {
 
       schema.post("update", function() {
             var object = this;
-            var action = "update";
-            if(object.deleted) {
-                action = "delete";
+            if (object.constructor.name !== "HistoryModel") {
+              var action = "update";
+              if(object.deleted) {
+                  action = "delete";
+              }
+              var history = new HistoryModel({
+                  action: action,
+                  object: object,
+                  owner: (object.owner) ? object.owner : null
+              });
+              history.save(function(err, object) {
+                  if (err) {
+                      console.log("Object Update/Remove History Save Failed:: "+err);
+                  }
+              });
             }
-            var history = new HistoryModel({
-                action: action,
-                object: object,
-                owner: (object.owner) ? object.owner : null
-            });
-            history.save(function(err, object) {
-                if (err) {
-                    console.log("Object Update/Remove History Save Failed:: "+err);
-                }
-            });
         });
 
         schema.post('save', function() {
           var object = this;
-          var history = new HistoryModel({
+          if (object.constructor.name !== "HistoryModel") {
+            var history = new HistoryModel({
                 action: "create",
                 object: object,
                 owner: (object.owner) ? object.owner : null
@@ -45,6 +48,8 @@ function historyPlugin(schema) {
                     console.log("Object Create History Save Failed:: "+err);
                 }
             });
+          }
+          
         });
 
       if (schema.path(createdAt)) {
