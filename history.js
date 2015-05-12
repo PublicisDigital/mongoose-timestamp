@@ -19,7 +19,7 @@ var HistoryModel = function() {
     schema.plugin(deepPopulate);
 
     schema.pre("save", function(next) {
-        this.objectId = this.object.id;
+        this.objectId = this.object._id;
         next();
     });
 

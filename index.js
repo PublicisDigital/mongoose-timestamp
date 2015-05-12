@@ -17,8 +17,8 @@ function historyPlugin(schema, addHistory) {
       dataObj[deleted] = deletedType;
 
     if (addHistory) {
-        schema.post("update", function() {
-            var object = this;
+        schema.post("findOneAndUpdate", function() {
+            var object = this._update;
             var action = "update";
             if(object.deleted) {
                 action = "delete";
