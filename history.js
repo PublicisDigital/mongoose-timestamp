@@ -10,7 +10,8 @@ var HistoryModel = function() {
     var schema = mongoose.Schema({
         action: {type: String, enum: ["create", "update", "delete"], required: true},
         object: {type: Object, required: true},
-        objectId: String
+        objectId: String,
+        owner: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
     });
 
     schema.plugin(timestamps);
