@@ -23,7 +23,8 @@ function historyPlugin(schema) {
             }
             var history = new HistoryModel({
                 action: action,
-                object: object
+                object: object,
+                owner: (object.owner) ? object.owner : null
             });
             history.save(function(err, object) {
                 if (err) {
