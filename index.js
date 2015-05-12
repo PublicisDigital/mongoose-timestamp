@@ -19,6 +19,7 @@ function historyPlugin(schema, addHistory) {
     if (addHistory) {
         schema.post("findOneAndUpdate", function() {
             var object = this._update;
+
             var action = "update";
             if(object.deleted) {
                 action = "delete";
@@ -33,6 +34,18 @@ function historyPlugin(schema, addHistory) {
                     console.log("Object Update/Remove History Save Failed:: "+err);
                 }
             });
+
+            if (object.$push != undefined) {
+                HistoryModel.findOneAndUpdate(
+                    {objectId: this._conditions._id},
+                    { $push:{ "object.comments": object.$push.comments}},
+                    {safe: true, upsert: true},
+                    function (err, history) {
+                        console.log(err);
+                    }
+                );
+            }
+
         });
 
         schema.post('save', function() {
