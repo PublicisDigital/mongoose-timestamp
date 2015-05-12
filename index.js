@@ -1,4 +1,3 @@
-var HistoryModel = require('./history');
 var mongoose = require('mongoose');
 
 function historyPlugin(schema) {
@@ -85,4 +84,6 @@ function historyPlugin(schema) {
 }
 
 module.exports.plugin = historyPlugin;
+
+var HistoryModel = require('./history');
 module.exports.historyModel = HistoryModel;
