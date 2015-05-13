@@ -50,8 +50,12 @@ function historyPlugin(schema, addHistory) {
 
         schema.post('save', function() {
             var object = this;
+            var action = "create";
+            if (object.createdAt != object.updatedAt) {
+                action = "update";
+            }
             var history = new HistoryModel({
-                action: "create",
+                action: action,
                 object: object,
                 owner: (object.owner) ? object.owner : null
             });
