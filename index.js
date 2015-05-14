@@ -1,4 +1,5 @@
-var mongoose = require('mongoose');
+var mongoose = require('mongoose'),
+    moment = require('moment');
 
 function historyPlugin(schema, addHistory) {
     if (addHistory == undefined) {addHistory = true;}
@@ -7,8 +8,8 @@ function historyPlugin(schema, addHistory) {
       var deleted = 'deleted';
       var updatedBy = 'updatedBy';
       var updatedByType = {type: mongoose.Schema.Types.ObjectId, ref: 'User'};
-      var updatedAtType = Date;
-      var createdAtType = Date;
+      var updatedAtType = String;
+      var createdAtType = String;
       var deletedType = Boolean;
 
       var dataObj = {};
@@ -80,7 +81,7 @@ function historyPlugin(schema, addHistory) {
           if (this.isNew) {
             this[updatedAt] = this[createdAt];
           } else if (this.isModified()) {
-            this[updatedAt] = new Date;
+            this[updatedAt] = new moment().format("x");
           }
           next();
         });
@@ -89,10 +90,10 @@ function historyPlugin(schema, addHistory) {
         schema.add(dataObj);
         schema.pre('save', function (next) {
           if (!this[createdAt]) {
-            this[createdAt] = this[updatedAt] = new Date;
+            this[createdAt] = this[updatedAt] = new moment().format("x");
             this[deleted] = false;
           } else if (this.isModified()) {
-            this[updatedAt] = new Date;
+            this[updatedAt] = new moment().format("x");
           }
           next();
         });
@@ -100,7 +101,7 @@ function historyPlugin(schema, addHistory) {
 
       if(!schema.methods.hasOwnProperty('touch'))
         schema.methods.touch = function(callback){
-          this[updatedAt] = new Date;
+          this[updatedAt] = new moment().format("x");
           this.save(callback)
         }
 
