@@ -81,7 +81,7 @@ function historyPlugin(schema, addHistory) {
           if (this.isNew) {
             this[updatedAt] = this[createdAt];
           } else if (this.isModified()) {
-            this[updatedAt] = new moment().format("x");
+            this[updatedAt] = new moment().format("X");
           }
           next();
         });
@@ -90,10 +90,10 @@ function historyPlugin(schema, addHistory) {
         schema.add(dataObj);
         schema.pre('save', function (next) {
           if (!this[createdAt]) {
-            this[createdAt] = this[updatedAt] = new moment().format("x");
+            this[createdAt] = this[updatedAt] = new moment().format("X");
             this[deleted] = false;
           } else if (this.isModified()) {
-            this[updatedAt] = new moment().format("x");
+            this[updatedAt] = new moment().format("X");
           }
           next();
         });
@@ -101,7 +101,7 @@ function historyPlugin(schema, addHistory) {
 
       if(!schema.methods.hasOwnProperty('touch'))
         schema.methods.touch = function(callback){
-          this[updatedAt] = new moment().format("x");
+          this[updatedAt] = new moment().format("X");
           this.save(callback)
         }
 
