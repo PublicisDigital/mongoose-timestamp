@@ -9,10 +9,10 @@ var mongoose = require('mongoose'),
 var HistoryModel = function() {
 
     var schema = mongoose.Schema({
-        action: {type: String, enum: ["create", "update", "delete"], required: true},
+        action: {type: String, enum: ["Create", "Update", "Delete"], required: true},
         object: {type: Object, required: true},
-        objectId: String,
-        owner: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
+        objectId: String, // This is injected in the "pre" save hook
+        owner: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true}
     });
 
     schema.plugin(history, false);
@@ -20,6 +20,7 @@ var HistoryModel = function() {
 
     schema.pre("save", function(next) {
         this.objectId = this.object._id;
+        this.increment();
         next();
     });
 

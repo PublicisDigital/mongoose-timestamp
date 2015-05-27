@@ -1,5 +1,6 @@
 var mongoose = require('mongoose'),
-    moment = require('moment');
+    moment = require('moment'),
+    captainHook  = require('captain-hook');
 
 function historyPlugin(schema, addHistory) {
     if (addHistory == undefined) {addHistory = true;}
@@ -18,54 +19,66 @@ function historyPlugin(schema, addHistory) {
       dataObj[deleted] = deletedType;
 
     if (addHistory) {
-        schema.post("findOneAndUpdate", function() {
-            var object = this._update;
 
-            var action = "update";
-            if(object.deleted) {
-                action = "delete";
+        schema.plugin(captainHook);
+
+        var updateHappened = function(object, next) {
+
+            console.log("updateHappened ", object._id);
+
+            var action;
+
+            if (object.deleted === true) {
+                action = "Delete";
+            } else {
+                action = "Update";
+
+                //HistoryModel.findOne({objectId: object._id}, {}, { sort: { 'updatedAt' : -1 } }, function(err, history) {
+                //
+                //    if (err) {
+                //        console.log(err);
+                //    }
+                //
+                //    console.log(history);
+                //
+                //    history.object = object;
+                //    history.save(function(err, _history) {
+                //        next();
+                //    });
+                //});
             }
             var history = new HistoryModel({
                 action: action,
                 object: object,
                 owner: (object.owner) ? object.owner : null
             });
-            history.save(function(err, object) {
-                if (err) {
-                    console.log("Object Update/Remove History Save Failed:: "+err);
-                }
+            history.save(function(err, _history) {
+                next();
             });
+        };
 
-            if (object.$push != undefined) {
-                HistoryModel.findOneAndUpdate(
-                    {objectId: this._conditions._id},
-                    { $push:{ "object.comments": object.$push.comments}},
-                    {safe: true, upsert: true},
-                    function (err, history) {
-                        console.log(err);
-                    }
-                );
-            }
+        var saveHappened = function(object, next) {
 
-        });
+            console.log("saveHappened ", object._id);
 
-        schema.post('save', function() {
-            var object = this;
-            var action = "create";
-            if (object.createdAt != object.updatedAt) {
-                action = "update";
-            }
+            var action = "Create";
+
             var history = new HistoryModel({
                 action: action,
                 object: object,
                 owner: (object.owner) ? object.owner : null
             });
-            history.save(function(err, object) {
-                if (err) {
-                    console.log("Object Create History Save Failed:: "+err);
-                }
+
+            history.save(function(err, _history) {
+
+                next();
             });
-        });
+        };
+
+        schema.postUpdate(updateHappened);
+
+        schema.postCreate(saveHappened);
+
     }
 
 
