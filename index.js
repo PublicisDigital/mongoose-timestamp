@@ -6,10 +6,10 @@ function historyPlugin(schema, addHistory) {
     if (addHistory == undefined) {addHistory = true;}
       var updatedAt = 'updatedAt';
       var createdAt = 'createdAt';
-      var deleted = 'deleted';
       var updatedBy = 'updatedBy';
-      var updatedByType = {type: mongoose.Schema.Types.ObjectId, ref: 'User'};
+      var deleted = 'deleted';
       var updatedAtType = String;
+      var updatedByType = String;
       var createdAtType = String;
       var deletedType = Boolean;
 
@@ -32,27 +32,15 @@ function historyPlugin(schema, addHistory) {
                 action = "Delete";
             } else {
                 action = "Update";
-
-                //HistoryModel.findOne({objectId: object._id}, {}, { sort: { 'updatedAt' : -1 } }, function(err, history) {
-                //
-                //    if (err) {
-                //        console.log(err);
-                //    }
-                //
-                //    console.log(history);
-                //
-                //    history.object = object;
-                //    history.save(function(err, _history) {
-                //        next();
-                //    });
-                //});
             }
             var history = new HistoryModel({
                 action: action,
-                object: object,
-                owner: (object.owner) ? object.owner : null
+                object: object
             });
-            history.save(function(err, _history) {
+            history.save(function(err, __history) {
+                if (err) {
+                    console.log(err);
+                }
                 next();
             });
         };
@@ -65,8 +53,7 @@ function historyPlugin(schema, addHistory) {
 
             var history = new HistoryModel({
                 action: action,
-                object: object,
-                owner: (object.owner) ? object.owner : null
+                object: object
             });
 
             history.save(function(err, _history) {
