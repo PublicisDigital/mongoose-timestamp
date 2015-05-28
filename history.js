@@ -12,7 +12,7 @@ var HistoryModel = function() {
         action: {type: String, enum: ["Create", "Update", "Delete"], required: true},
         object: {type: Object, required: true},
         objectId: String, // This is injected in the "pre" save hook
-        owner: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}// This is injected in the "pre" save hook
+        owner: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
     });
 
     schema.plugin(history, false);
@@ -20,7 +20,6 @@ var HistoryModel = function() {
 
     schema.pre("save", function(next) {
         this.objectId = this.object._id;
-        this.owner = this.object.updatedBy;
         next();
     });
 

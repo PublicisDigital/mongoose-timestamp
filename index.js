@@ -35,7 +35,8 @@ function historyPlugin(schema, addHistory) {
             }
             var history = new HistoryModel({
                 action: action,
-                object: object
+                object: object,
+                owner: object.updatedBy
             });
             history.save(function(err, __history) {
                 if (err) {
@@ -53,7 +54,8 @@ function historyPlugin(schema, addHistory) {
 
             var history = new HistoryModel({
                 action: action,
-                object: object
+                object: object,
+                owner: object.updatedBy
             });
 
             history.save(function(err, _history) {
