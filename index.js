@@ -1,6 +1,8 @@
 var mongoose = require('mongoose'),
     moment = require('moment'),
-    captainHook  = require('captain-hook');
+    captainHook  = require('captain-hook'),
+    _ = require('lodash'),
+     HistoryModel;
 
 function historyPlugin(schema, addHistory) {
     if (addHistory == undefined) {addHistory = true;}
@@ -24,25 +26,63 @@ function historyPlugin(schema, addHistory) {
 
         var updateHappened = function(object, next) {
 
-            console.log("updateHappened ", object._id);
-
-            var action;
-
-            if (object.deleted === true) {
-                action = "Delete";
-            } else {
-                action = "Update";
-            }
-            var history = new HistoryModel({
-                action: action,
-                object: object,
-                owner: object.updatedBy
-            });
-            history.save(function(err, __history) {
+            HistoryModel.find({objectId: object._id}, {}, {sort: {updatedAt: -1}})
+                .limit(1)
+                .exec(function(err, history) {
                 if (err) {
-                    console.log(err);
+                    console.log("Err:: ", err);
                 }
-                next();
+                history = history[0];
+
+                var blacklistedKeys = ["_id", "updatedAt", "updatedBy", "createdAt", "owner", "__v", "meta"];
+                function onBlacklist(key) {
+                    var blacklistedKey = false;
+                    _.forEach(blacklistedKeys, function(k) {
+                        if (k == key) {
+                            blacklistedKey = true;
+                        }
+                    });
+                    return blacklistedKey;
+                }
+
+                var different = false;
+                _.forIn(history.object, function(value, key) {
+
+                    if (!onBlacklist(key)) {
+                        console.log("CURRENT OBJECT:: KEY:: ", key, "VALUE:: ", object[key]);
+                        console.log("NEW OBJECT:: KEY:: ", key, "VALUE:: ", value);
+                        if (!_.isEqual(value, object[key]))  {
+                            console.log("FOUND DIFFERENCE FOR OBJECT/ARRAY");
+                            different = true;
+                        }
+                    }
+                });
+
+                if (different) {
+                    var action;
+
+                    if (object.deleted === true) {
+                        action = "Delete";
+                    } else {
+                        action = "Update";
+                    }
+                    var newHistory = new HistoryModel({
+                        action: action,
+                        object: object,
+                        owner: object.updatedBy
+                    });
+                    newHistory.save(function(err, __history) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        next();
+                    });
+                } else {
+                    next();
+                }
+
+
+
             });
         };
 
@@ -110,6 +150,5 @@ function historyPlugin(schema, addHistory) {
 }
 
 module.exports.plugin = historyPlugin;
-
-var HistoryModel = require('./history');
+HistoryModel = require('./history');
 module.exports.historyModel = HistoryModel;
