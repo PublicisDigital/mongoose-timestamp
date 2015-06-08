@@ -2,7 +2,7 @@ var mongoose = require('mongoose'),
     moment = require('moment'),
     captainHook  = require('captain-hook'),
     _ = require('lodash'),
-     HistoryModel;
+    HistoryModel;
 
 function historyPlugin(schema, addHistory) {
     if (addHistory == undefined) {addHistory = true;}
