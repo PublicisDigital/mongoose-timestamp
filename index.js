@@ -45,18 +45,24 @@ function historyPlugin(schema, addHistory) {
                     return blacklistedKey;
                 }
 
-                var different = false;
-                _.forIn(history.object, function(value, key) {
+                    var different = false;
+                    if (history !== undefined) {
 
-                    if (!onBlacklist(key)) {
-                        console.log("CURRENT OBJECT:: KEY:: ", key, "VALUE:: ", object[key]);
-                        console.log("NEW OBJECT:: KEY:: ", key, "VALUE:: ", value);
-                        if (!_.isEqual(value, object[key]))  {
-                            console.log("FOUND DIFFERENCE FOR OBJECT/ARRAY");
-                            different = true;
-                        }
+                        _.forIn(history.object, function(value, key) {
+
+                            if (!onBlacklist(key)) {
+                                console.log("CURRENT OBJECT:: KEY:: ", key, "VALUE:: ", object[key]);
+                                console.log("NEW OBJECT:: KEY:: ", key, "VALUE:: ", value);
+                                if (!_.isEqual(value, object[key]))  {
+                                    console.log("FOUND DIFFERENCE FOR OBJECT/ARRAY");
+                                    different = true;
+                                }
+                            }
+                        });
+                    } else {
+                        different = true;
                     }
-                });
+
 
                 if (different) {
                     var action;
