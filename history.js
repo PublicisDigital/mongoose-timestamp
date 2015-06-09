@@ -4,8 +4,8 @@
 
 var mongoose = require('mongoose'),
     history = require('mongoose-history').plugin,
-    deepPopulate = require('mongoose-deep-populate');
-
+    deepPopulate = require('mongoose-deep-populate'),
+    db = require('../../lib/database');
 var HistoryModel = function() {
 
     var schema = mongoose.Schema({
@@ -23,7 +23,7 @@ var HistoryModel = function() {
         next();
     });
 
-    return mongoose.model('History', schema);
+    return db.mongodb.authDB().model('History', schema);
 };
 
 module.exports = new HistoryModel();
