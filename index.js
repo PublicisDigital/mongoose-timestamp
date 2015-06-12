@@ -10,15 +10,18 @@ function historyPlugin(schema, addHistory) {
       var createdAt = 'createdAt';
       var updatedBy = 'updatedBy';
       var deleted = 'deleted';
+      var published = 'deleted';
       var updatedAtType = String;
       var updatedByType = String;
       var createdAtType = String;
       var deletedType = Boolean;
+      var publishedType = Boolean;
 
       var dataObj = {};
-      dataObj[updatedAt] = updatedAtType;
-      dataObj[updatedBy] = updatedByType;
-      dataObj[deleted] = deletedType;
+      dataObj.updatedAt = updatedAtType;
+      dataObj.updatedBy = updatedByType;
+      dataObj.deleted = deletedType;
+      dataObj.published = publishedType;
 
     if (addHistory) {
 
