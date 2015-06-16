@@ -35,7 +35,6 @@ module.exports = function(schema) {
         schema.pre('save', function (next) {
           if (!this[createdAt]) {
             this[createdAt] = this[updatedAt] = new moment().format("X");
-            this[deleted] = false;
           } else if (this.isModified()) {
             this[updatedAt] = new moment().format("X");
           }
