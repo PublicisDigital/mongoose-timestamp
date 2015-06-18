@@ -7,7 +7,7 @@ module.exports = function(schema) {
       var createdAt = 'createdAt';
       var updatedBy = 'updatedBy';
       var updatedAtType = String;
-      var updatedByType = String;
+      var updatedByType = mongoose.Schema.Types.ObjectId;
       var createdAtType = String;
 
       var dataObj = {};
