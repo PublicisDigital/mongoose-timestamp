@@ -5,14 +5,11 @@ var mongoose = require('mongoose'),
 module.exports = function(schema) {
       var updatedAt = 'updatedAt';
       var createdAt = 'createdAt';
-      var updatedBy = 'updatedBy';
       var updatedAtType = String;
-      var updatedByType = mongoose.Schema.Types.ObjectId;
       var createdAtType = String;
 
       var dataObj = {};
       dataObj.updatedAt = updatedAtType;
-      dataObj.updatedBy = updatedByType;
 
       if (schema.path(createdAt)) {
         schema.add(dataObj);
