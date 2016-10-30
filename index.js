@@ -21,7 +21,7 @@ module.exports = function(schema) {
         schema.pre('save', function (next) {
           if (this.isNew) {
             this[updatedAt] = this[createdAt];
-          } else if (this.isModified()) {
+          } else {
             this[updatedAt] = new moment().format("X");
           }
           next();
@@ -32,7 +32,7 @@ module.exports = function(schema) {
         schema.pre('save', function (next) {
           if (!this[createdAt]) {
             this[createdAt] = this[updatedAt] = new moment().format("X");
-          } else if (this.isModified()) {
+          } else {
             this[updatedAt] = new moment().format("X");
           }
           next();
