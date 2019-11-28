@@ -15,7 +15,7 @@
     "url": "git://github.com/drudge/mongoose-timestamp"
   },
   "devDependencies": {
-    "mongoose": "5.2.5",
+    "mongoose": "5.7.5",
     "should": "~3.2.0",
     "mocha": "~1.18.2"
   },
